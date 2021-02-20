@@ -30,7 +30,8 @@ class Atendimento {
             res.status(400).json(erros)
         }
         else{
-            const sql = 'INSERT INTO Atendimentos SET ?'
+            const sql = 'INSERT INTO Atendimentos SET ?' 
+            //A interrogação representa o parametro atendimentoDatado na conexao.query, passados dentor de um vetor [?, ?]
             const atendimentoDatado = {...atendimento, dataCriacao, data}//Ao colocar este data, automaticamente sobrescreve o data
             // que já tinha no objeto de atendimentos
 
@@ -42,6 +43,59 @@ class Atendimento {
                 }
             })
         }
+    }
+
+    lista(res){
+        const sql = 'SELECT* FROM Atendimentos'
+
+        conexao.query(sql, (erro, resultados) => {
+            if(erro){
+                res.status(400).json(erro)
+            }
+            else{
+                res.status(200).json(resultados)
+            }
+        })
+    }
+
+    buscaPorId(id, res){
+        const sql = `SELECT* FROM Atendimentos WHERE id=${id}`
+
+        conexao.query(sql, (erro, resultados) => {
+            const atendimento = resultados[0]
+            if(erro){
+                res.status(400).json(erro)
+            }
+            else{
+                res.status(200).json(atendimento)
+            }
+        })
+    }
+
+    altera(id, valores, res) {
+        const sql = 'UPDATE Atendimentos SET ? WHERE id=?'
+    
+        conexao.query(sql, [valores, id], (erro, resultados) => { 
+            if(erro) {
+                res.status(400).json(erro)
+            } else {
+                res.status(200).json(resultados)   
+            }
+        })
+    }
+    
+    deleta(id, res){
+        const sql = `DELETE FROM Atendimentos WHERE id=${id}`
+
+        conexao.query(sql, (erro, resultados) => {
+            if(erro){
+                res.status(400).json(erro)
+            }
+            else{
+                //res.status(200).json(resultados)
+                res.status(200).json({id})
+            }
+        })
     }
 }
 
